@@ -12,6 +12,14 @@
 .github/SECURITY.md
 .github/dependabot.yml
 .github/secret_scanning.yml
+.github/licenses.tmpl
+
+## GitHub Issue Templates
+.github/ISSUE_TEMPLATE/bug_report.md
+.github/ISSUE_TEMPLATE/config.yml
+.github/ISSUE_TEMPLATE/feedback.md
+.github/ISSUE_TEMPLATE/submit-a-design-proposal.md
+.github/ISSUE_TEMPLATE/submit-a-request.md
 
 ## Documentation Files
 docs/README.md
@@ -30,6 +38,12 @@ docs/releasing.md
 docs/source.md
 docs/triage.md
 docs/working-with-us.md
+
+## Primer Documentation
+docs/primer/README.md
+docs/primer/components/README.md
+docs/primer/foundations/README.md
+docs/primer/getting-started/README.md
 
 ## Main Documentation
 README.md
