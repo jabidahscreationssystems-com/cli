@@ -201,7 +201,7 @@ func (m *templateManager) Choose() (Template, error) {
 
 	selectedOption, err := m.prompter.Select("Choose a template", "", append(names, blankOption))
 	if err != nil {
-		return nil, fmt.Errorf("could not prompt: %w", err)
+		return nil, fmt.Errorf("failed to select template: %w", err)
 	}
 
 	if selectedOption == len(names) {
@@ -265,7 +265,12 @@ func (m *templateManager) fetch() error {
 		gitClient := &git.Client{}
 		dir, err = gitClient.ToplevelDir(context.Background())
 		if err != nil {
-			return nil // abort silently
+			// If we don't have API support, we need filesystem templates
+			if !hasAPI {
+				return fmt.Errorf("failed to get git directory for templates: %w", err)
+			}
+			// If we have API templates, we can skip filesystem templates
+			return nil
 		}
 	}
 

@@ -38,7 +38,7 @@ mainLoop:
 				}
 				for _, tf := range templates {
 					if strings.HasSuffix(tf.Name(), ".md") &&
-						file.Type() != fs.ModeSymlink {
+						tf.Type() != fs.ModeSymlink {
 						results = append(results, path.Join(dir, file.Name(), tf.Name()))
 					}
 				}

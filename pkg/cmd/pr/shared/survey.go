@@ -68,7 +68,7 @@ func confirmSubmission(p Prompt, allowPreview, allowMetadata, allowDraft, isDraf
 
 	result, err := p.Select("What's next?", "", options)
 	if err != nil {
-		return -1, fmt.Errorf("could not prompt: %w", err)
+		return -1, fmt.Errorf("failed to select next action: %w", err)
 	}
 
 	switch options[result] {
