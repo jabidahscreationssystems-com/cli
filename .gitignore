@@ -1,4 +1,5 @@
 /bin
+/gh
 /share/bash-completion/completions
 /share/fish/vendor_completions.d
 /share/man/man1

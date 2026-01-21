@@ -13,6 +13,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// unsetGlobalConfig unsets a global git config key, ignoring errors if the key doesn't exist
+func unsetGlobalConfig(gc *git.Client, key string) {
+	cmd, err := gc.Command(context.Background(), "config", "--global", "--unset-all", key)
+	if err == nil {
+		_ = cmd.Run() // Ignore errors - key might not exist
+	}
+}
+
 func withIsolatedGitConfig(t *testing.T) {
 	t.Helper()
 
@@ -23,7 +31,23 @@ func withIsolatedGitConfig(t *testing.T) {
 	t.Setenv("GIT_CONFIG_GLOBAL", configFile)
 
 	// And disable git reading the system config
-	t.Setenv("GIT_CONFIG_NOSYSTEM", "true")
+	t.Setenv("GIT_CONFIG_NOSYSTEM", "1")
+
+	// Change to a directory without a .git folder to avoid reading local config
+	// This prevents picking up credential helpers from the repository's .git/config
+	originalDir := t.TempDir()
+	t.Chdir(originalDir)
+
+	// Disable any credential helpers that might be configured in the environment
+	// This prevents the test from picking up actual GitHub credentials
+	t.Setenv("GIT_TERMINAL_PROMPT", "0")
+	t.Setenv("GITHUB_TOKEN", "")
+	t.Setenv("GH_TOKEN", "")
+
+	// Explicitly unset any global credential configuration
+	gc := &git.Client{}
+	unsetGlobalConfig(gc, "credential.username")
+	unsetGlobalConfig(gc, "credential.helper")
 }
 
 func configureTestCredentialHelper(t *testing.T, key string) {
