@@ -13,6 +13,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// unsetGlobalConfig unsets a global git config key, ignoring errors if the key doesn't exist
+func unsetGlobalConfig(gc *git.Client, key string) {
+	cmd, err := gc.Command(context.Background(), "config", "--global", "--unset-all", key)
+	if err == nil {
+		_ = cmd.Run() // Ignore errors - key might not exist
+	}
+}
+
 func withIsolatedGitConfig(t *testing.T) {
 	t.Helper()
 
@@ -38,16 +46,8 @@ func withIsolatedGitConfig(t *testing.T) {
 
 	// Explicitly unset any global credential configuration
 	gc := &git.Client{}
-	// Unset any global credential.username that might interfere
-	cmd, err := gc.Command(context.Background(), "config", "--global", "--unset-all", "credential.username")
-	if err == nil {
-		_ = cmd.Run() // Ignore errors - key might not exist
-	}
-	// Unset any global credential.helper that might interfere
-	cmd, err = gc.Command(context.Background(), "config", "--global", "--unset-all", "credential.helper")
-	if err == nil {
-		_ = cmd.Run() // Ignore errors - key might not exist
-	}
+	unsetGlobalConfig(gc, "credential.username")
+	unsetGlobalConfig(gc, "credential.helper")
 }
 
 func configureTestCredentialHelper(t *testing.T, key string) {
